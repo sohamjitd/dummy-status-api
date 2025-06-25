@@ -3,15 +3,13 @@ from fastapi.responses import JSONResponse
 
 app = FastAPI()
 
-# In-memory request counter
 request_counter = {"count": 0}
+
+statuses = ["picked up", "in progress", "delivered"]
 
 @app.get("/getstatus")
 def get_status():
     request_counter["count"] += 1
-    if request_counter["count"] == 1:
-        return JSONResponse(content={"status": "picked up"})
-    elif request_counter["count"] == 2:
-        return JSONResponse(content={"status": "in progress"})
-    else:
-        return JSONResponse(content={"status": "delivered"})
+    # Use modulo to cycle through 0,1,2
+    index = (request_counter["count"] - 1) % len(statuses)
+    return JSONResponse(content={"status": statuses[index]})
